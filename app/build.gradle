@@ -29,18 +29,18 @@ android {
 
     buildTypes {
 
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file("local.properties").newDataInputStream())
-        def key = properties.getProperty("api_key", "")
-
-        debug {
-            buildConfigField 'String', "KEY", key
-            resValue 'string', "api_key", key
-        }
+//        Properties properties = new Properties()
+//        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+//        def key = properties.getProperty("api_key", "")
+//
+//        debug {
+//            buildConfigField 'String', "KEY", key
+//            resValue 'string', "api_key", key
+//        }
 
         release {
-            buildConfigField 'String', "KEY", key
-            resValue 'string', "api_key", key
+//            buildConfigField 'String', "KEY", key
+//            resValue 'string', "api_key", key
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
