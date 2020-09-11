@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sampleapp.databinding.ItemFavoriteLayoutBinding
-import com.example.sampleapp.model.FavoriteArtist
+import com.example.sampleapp.model.Artist
 
-class FavoriteAdapter : ListAdapter<FavoriteArtist, FavoriteAdapter.ViewHolder>(
+class FavoriteAdapter : ListAdapter<Artist, FavoriteAdapter.ViewHolder>(
     DiffCallback()
 ) {
 
@@ -34,19 +34,19 @@ class FavoriteAdapter : ListAdapter<FavoriteArtist, FavoriteAdapter.ViewHolder>(
 
     class ViewHolder(private val binding: ItemFavoriteLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: FavoriteArtist) {
+        fun bind(item: Artist) {
             binding.apply {
                 favorite = item
             }
         }
     }
 
-    private class DiffCallback : DiffUtil.ItemCallback<FavoriteArtist>() {
-        override fun areItemsTheSame(oldItem: FavoriteArtist, newItem: FavoriteArtist): Boolean {
+    private class DiffCallback : DiffUtil.ItemCallback<Artist>() {
+        override fun areItemsTheSame(oldItem: Artist, newItem: Artist): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: FavoriteArtist, newItem: FavoriteArtist): Boolean {
+        override fun areContentsTheSame(oldItem: Artist, newItem: Artist): Boolean {
             return oldItem == newItem
         }
     }

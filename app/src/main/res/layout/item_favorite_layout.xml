@@ -5,7 +5,7 @@
      <data>
         <variable
             name="favorite"
-            type="com.example.sampleapp.model.FavoriteArtist" />
+            type="com.example.sampleapp.model.Artist" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
