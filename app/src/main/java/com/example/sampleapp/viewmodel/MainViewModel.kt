@@ -9,6 +9,7 @@ import kotlinx.coroutines.*
 
 class MainViewModel(
         private val artistApiRepository: ArtistApiRepository,
+        private val artistList: MutableLiveData<MutableList<Artist>>,
         mainDispatcher: CoroutineDispatcher,
         ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -21,7 +22,6 @@ class MainViewModel(
 
     private fun fetchArtist(): LiveData<MutableList<Artist>> {
 
-        val artistList = MutableLiveData<MutableList<Artist>>()
         mUiScope.launch {
             val data = mIoScope.async {
                 return@async artistApiRepository.getArtist()
@@ -31,4 +31,5 @@ class MainViewModel(
         }
         return artistList
     }
+
 }

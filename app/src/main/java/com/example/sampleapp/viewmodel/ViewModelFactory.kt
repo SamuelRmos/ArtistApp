@@ -1,9 +1,11 @@
 package com.example.sampleapp.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.sampleapp.App
 import com.example.sampleapp.di.AppComponent
+import com.example.sampleapp.model.Artist
 import com.example.sampleapp.repository.ArtistApiRepository
 import com.example.sampleapp.repository.ArtistDataRepository
 import com.example.sampleapp.repository.UserRepository
@@ -24,6 +26,10 @@ class ViewModelFactory : ViewModelProvider.Factory {
     @Inject
     lateinit var artistDataRepository: ArtistDataRepository
 
+    private val favorite = mutableListOf<Artist>()
+    private val favoriteList = MutableLiveData<MutableList<Artist>>()
+    private val artistList = MutableLiveData<MutableList<Artist>>()
+
     init {
         val appComponent: AppComponent = App.appComponent
         appComponent.inject(this)
@@ -40,12 +46,15 @@ class ViewModelFactory : ViewModelProvider.Factory {
 
             modelClass.isAssignableFrom(MainViewModel::class.java) -> MainViewModel(
                     artistApiRepository,
+                    artistList,
                     Dispatchers.Main,
                     Dispatchers.IO
             ) as T
 
             modelClass.isAssignableFrom(FavoriteViewModel::class.java) -> FavoriteViewModel(
-                    artistDataRepository
+                    artistDataRepository,
+                    favoriteList,
+                    favorite
             ) as T
 
             else -> throw IllegalArgumentException("Unknown ViewModel class")
