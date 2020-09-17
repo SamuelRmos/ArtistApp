@@ -26,7 +26,4 @@ class PersistenceDataModule {
     @Provides
     fun provideArtistDao(appDatabase: AppDatabase) = appDatabase.artistDao()
 
-    @Singleton
-    @Provides
-    fun provideFavoriteDao(appDatabase: AppDatabase) = appDatabase.favoriteDao()
 }

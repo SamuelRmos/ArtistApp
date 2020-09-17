@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.sampleapp.App
 import com.example.sampleapp.R
@@ -53,15 +52,17 @@ class MainFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun setRecyclerView() {
         binding.recyclerView.adapter = adapter
-        mainViewModel.artistLiveData.observe(viewLifecycleOwner, {
+        mainViewModel.fetchArtist().observe(viewLifecycleOwner, {
             adapter.updateList(it)
         })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+
         inflater.inflate(R.menu.search_menu, menu)
         val searchView = SearchView((context as MainActivity)
                 .supportActionBar?.themedContext ?: context)
+
         menu.findItem(R.id.search).apply {
             actionView = searchView
         }

@@ -6,6 +6,7 @@ import com.example.sampleapp.di.*
 import com.example.sampleapp.util.Constants
 
 class App : Application() {
+
     companion object {
         lateinit var ctx: Context
         lateinit var appComponent: AppComponent
@@ -17,7 +18,7 @@ class App : Application() {
         appComponent = initDaggerComponent()
     }
 
-    private fun initDaggerComponent(): AppComponent = DaggerAppComponent
+    private fun initDaggerComponent() = DaggerAppComponent
         .builder()
         .appModule(AppModule(this))
         .apiModule(ApiModule(Constants.baseURL))

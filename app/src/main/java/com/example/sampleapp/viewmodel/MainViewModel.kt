@@ -18,9 +18,7 @@ class MainViewModel(
     private val mUiScope = CoroutineScope(mainDispatcher + job)
     private val mIoScope = CoroutineScope(ioDispatcher + job)
 
-    var artistLiveData = fetchArtist()
-
-    private fun fetchArtist(): LiveData<MutableList<Artist>> {
+    fun fetchArtist(): LiveData<MutableList<Artist>> {
 
         mUiScope.launch {
             val data = mIoScope.async {

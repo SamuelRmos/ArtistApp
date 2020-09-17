@@ -7,16 +7,11 @@ import com.example.sampleapp.repository.ArtistDataRepository
 
 class FavoriteViewModel(
         private val artistDataRepository: ArtistDataRepository,
-        favoriteList: MutableLiveData<MutableList<Artist>>,
-        favorite: MutableList<Artist>
+        private val favoriteList: MutableLiveData<MutableList<Artist>>,
+        private val favorite: MutableList<Artist>
 ) : ViewModel() {
 
-    val favoriteLiveData = artistFavorites(favoriteList, favorite)
-
-    private fun artistFavorites(
-            favoriteList: MutableLiveData<MutableList<Artist>>,
-            favorite: MutableList<Artist>
-    ): MutableLiveData<MutableList<Artist>> {
+    fun artistFavorites(): MutableLiveData<MutableList<Artist>> {
 
         for (data in artistDataRepository.getListArtist()) {
             if (data.favorite == true)
