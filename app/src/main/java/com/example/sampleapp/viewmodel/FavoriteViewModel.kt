@@ -6,13 +6,17 @@ import com.example.sampleapp.model.Artist
 import com.example.sampleapp.repository.ArtistDataRepository
 
 class FavoriteViewModel(
-        private val artistDataRepository: ArtistDataRepository
+        private val artistDataRepository: ArtistDataRepository,
+        favoriteList: MutableLiveData<MutableList<Artist>>,
+        favorite: MutableList<Artist>
 ) : ViewModel() {
-    val favoriteLiveData = artistFavorites()
 
-    private fun artistFavorites(): MutableLiveData<MutableList<Artist>> {
-        val favoriteList = MutableLiveData<MutableList<Artist>>()
-        val favorite = mutableListOf<Artist>()
+    val favoriteLiveData = artistFavorites(favoriteList, favorite)
+
+    private fun artistFavorites(
+            favoriteList: MutableLiveData<MutableList<Artist>>,
+            favorite: MutableList<Artist>
+    ): MutableLiveData<MutableList<Artist>> {
 
         for (data in artistDataRepository.getListArtist()) {
             if (data.favorite == true)
@@ -21,6 +25,6 @@ class FavoriteViewModel(
 
         favoriteList.postValue(favorite)
         return favoriteList
-
     }
+
 }
