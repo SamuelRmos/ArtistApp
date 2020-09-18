@@ -5,8 +5,8 @@ import com.example.sampleapp.model.Artist
 object MockTestUtil {
 
     fun mockArtist() = Artist(
-            id = 333,
-            name = "Pink Floyd",
+            id = 2,
+            name = "Zootopia",
             poster = "/cvfdffrggv.jpg",
             favorite = false
     )
