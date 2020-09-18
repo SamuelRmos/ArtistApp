@@ -1,12 +1,18 @@
 package com.example.sampleapp.view.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.sampleapp.R
 import com.example.sampleapp.databinding.FavoriteFragmentBinding
+import com.example.sampleapp.model.Artist
+import com.example.sampleapp.util.LiveDataResult
 import com.example.sampleapp.view.activity.MainActivity
 import com.example.sampleapp.view.adapter.FavoriteAdapter
 import com.example.sampleapp.viewmodel.FavoriteViewModel
@@ -17,6 +23,18 @@ class FavoriteFragment : Fragment(), SearchView.OnQueryTextListener {
     private lateinit var binding: FavoriteFragmentBinding
     private lateinit var favoriteViewModel: FavoriteViewModel
     private lateinit var adapter: FavoriteAdapter
+
+    private val mDataObserver = Observer<LiveDataResult<MutableList<Artist>>> {
+        when (it.status) {
+            LiveDataResult.STATUS.ERROR -> Toast
+                    .makeText(activity, "Error in getting data", Toast.LENGTH_SHORT).show()
+
+            LiveDataResult.STATUS.SUCCESS -> setRecyclerView(it.data!!)
+
+            LiveDataResult.STATUS.LOADING -> {
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,17 +50,21 @@ class FavoriteFragment : Fragment(), SearchView.OnQueryTextListener {
 
         binding = FavoriteFragmentBinding.inflate(inflater, container, false)
         context ?: return binding.root
-        setRecyclerView()
+        adapter = FavoriteAdapter(arrayListOf())
+        binding.recyclerView.adapter = adapter
         return binding.root
     }
 
-    private fun setRecyclerView() {
-        adapter = FavoriteAdapter(arrayListOf())
-        binding.recyclerView.adapter = adapter
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        favoriteViewModel.artistFavorites().observe(viewLifecycleOwner, mDataObserver)
+    }
 
-        favoriteViewModel.artistFavorites().observe(viewLifecycleOwner, {
-            adapter.updateList(it)
-        })
+    private fun setRecyclerView(list: MutableList<Artist>) {
+        val refresh = Handler(Looper.getMainLooper())
+        refresh.post {
+            adapter.updateList(list)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
