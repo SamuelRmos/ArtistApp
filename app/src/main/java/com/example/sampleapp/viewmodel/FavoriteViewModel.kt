@@ -4,27 +4,29 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sampleapp.model.Artist
 import com.example.sampleapp.repository.ArtistDataRepository
+import com.example.sampleapp.util.LiveDataResult
 
 class FavoriteViewModel(
         private val artistDataRepository: ArtistDataRepository,
-        favoriteList: MutableLiveData<MutableList<Artist>>,
-        favorite: MutableList<Artist>
+        private val repositoriesLiveData: MutableLiveData<LiveDataResult<MutableList<Artist>>>,
+        private val favorite: MutableList<Artist>
 ) : ViewModel() {
 
-    val favoriteLiveData = artistFavorites(favoriteList, favorite)
+    fun artistFavorites(): MutableLiveData<LiveDataResult<MutableList<Artist>>> {
+        repositoriesLiveData.value = LiveDataResult.loading()
+        try {
 
-    private fun artistFavorites(
-            favoriteList: MutableLiveData<MutableList<Artist>>,
-            favorite: MutableList<Artist>
-    ): MutableLiveData<MutableList<Artist>> {
+            for (data in artistDataRepository.getListArtist()) {
+                if (data.favorite == true)
+                    favorite.add(data)
+            }
 
-        for (data in artistDataRepository.getListArtist()) {
-            if (data.favorite == true)
-                favorite.add(data)
+            repositoriesLiveData.value = LiveDataResult.success(favorite)
+        } catch (e: Exception) {
+            repositoriesLiveData.value = LiveDataResult.error(e)
         }
 
-        favoriteList.postValue(favorite)
-        return favoriteList
+        return repositoriesLiveData
     }
 
 }

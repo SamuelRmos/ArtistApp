@@ -2,14 +2,11 @@ package com.example.sampleapp.view.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.sampleapp.view.fragment.FavoriteFragment
 import com.example.sampleapp.view.fragment.MainFragment
 
-class MainPagerAdapter(fa: FragmentActivity) :
-    FragmentStateAdapter(fa) {
+class MainPagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {

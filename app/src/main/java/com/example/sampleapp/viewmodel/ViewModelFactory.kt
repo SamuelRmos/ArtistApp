@@ -9,6 +9,7 @@ import com.example.sampleapp.model.Artist
 import com.example.sampleapp.repository.ArtistApiRepository
 import com.example.sampleapp.repository.ArtistDataRepository
 import com.example.sampleapp.repository.UserRepository
+import com.example.sampleapp.util.LiveDataResult
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -27,8 +28,7 @@ class ViewModelFactory : ViewModelProvider.Factory {
     lateinit var artistDataRepository: ArtistDataRepository
 
     private val favorite = mutableListOf<Artist>()
-    private val favoriteList = MutableLiveData<MutableList<Artist>>()
-    private val artistList = MutableLiveData<MutableList<Artist>>()
+    private val repositoriesLiveData = MutableLiveData<LiveDataResult<MutableList<Artist>>>()
 
     init {
         val appComponent: AppComponent = App.appComponent
@@ -46,14 +46,14 @@ class ViewModelFactory : ViewModelProvider.Factory {
 
             modelClass.isAssignableFrom(MainViewModel::class.java) -> MainViewModel(
                     artistApiRepository,
-                    artistList,
+                    repositoriesLiveData,
                     Dispatchers.Main,
                     Dispatchers.IO
             ) as T
 
             modelClass.isAssignableFrom(FavoriteViewModel::class.java) -> FavoriteViewModel(
                     artistDataRepository,
-                    favoriteList,
+                    repositoriesLiveData,
                     favorite
             ) as T
 

@@ -1,15 +1,20 @@
 package com.example.sampleapp.view.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.sampleapp.App
 import com.example.sampleapp.R
 import com.example.sampleapp.databinding.MainFragmentBinding
+import com.example.sampleapp.model.Artist
 import com.example.sampleapp.repository.ArtistDataRepository
+import com.example.sampleapp.util.LiveDataResult
 import com.example.sampleapp.view.activity.MainActivity
 import com.example.sampleapp.view.adapter.ArtistAdapter
 import com.example.sampleapp.viewmodel.MainViewModel
@@ -25,16 +30,26 @@ class MainFragment : Fragment(), SearchView.OnQueryTextListener {
     @Inject
     lateinit var artistDataRepository: ArtistDataRepository
 
+    private val mDataObserver = Observer<LiveDataResult<MutableList<Artist>>> {
+        when (it.status) {
+            LiveDataResult.STATUS.ERROR -> Toast
+                    .makeText(activity, "Error in getting data", Toast.LENGTH_SHORT).show()
+
+            LiveDataResult.STATUS.SUCCESS -> setRecyclerView(it.data!!)
+
+            LiveDataResult.STATUS.LOADING -> {
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val appComponent = App.appComponent
         appComponent.inject(this)
 
         mainViewModel = ViewModelProvider(
                 this,
                 ViewModelFactory()).get(MainViewModel::class.java)
-
         setHasOptionsMenu(true)
     }
 
@@ -43,25 +58,30 @@ class MainFragment : Fragment(), SearchView.OnQueryTextListener {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-
         binding = MainFragmentBinding.inflate(inflater, container, false)
         context ?: return binding.root
         adapter = ArtistAdapter(requireActivity(), arrayListOf(), artistDataRepository)
-        setRecyclerView()
+        binding.recyclerView.adapter = adapter
         return binding.root
     }
 
-    private fun setRecyclerView() {
-        binding.recyclerView.adapter = adapter
-        mainViewModel.artistLiveData.observe(viewLifecycleOwner, {
-            adapter.updateList(it)
-        })
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        mainViewModel.fetchArtist().observe(viewLifecycleOwner, mDataObserver)
+    }
+
+    private fun setRecyclerView(list: MutableList<Artist>) {
+        val refresh = Handler(Looper.getMainLooper())
+        refresh.post {
+            adapter.updateList(list)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_menu, menu)
         val searchView = SearchView((context as MainActivity)
                 .supportActionBar?.themedContext ?: context)
+
         menu.findItem(R.id.search).apply {
             actionView = searchView
         }
